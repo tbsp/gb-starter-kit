@@ -32,11 +32,14 @@ else
 endif
 
 # Shortcut if you want to use a local copy of RGBDS
-RGBDS   :=
-RGBASM  := $(RGBDS)rgbasm
-RGBLINK := $(RGBDS)rgblink
-RGBFIX  := $(RGBDS)rgbfix
-RGBGFX  := $(RGBDS)rgbgfx
+RGBDS   := ../rgbds/
+RGBASM  := $(RGBDS)rgbasm.exe
+RGBLINK := $(RGBDS)rgblink.exe
+RGBFIX  := $(RGBDS)rgbfix.exe
+RGBGFX  := $(RGBDS)rgbgfx.exe
+
+EMULATOR_EMULICIOUS = ../../Emulicious/Emulicious.exe
+EMULATOR_BGB = ../../bgb64/bgb64.exe
 
 ROM = $(BINDIR)/$(ROMNAME).$(ROMEXT)
 
@@ -49,6 +52,7 @@ FIXFLAGS = -p $(PADVALUE) -v -i "$(GAMEID)" -k "$(LICENSEE)" -l $(OLDLIC) -m $(M
 
 # The list of "root" ASM files that RGBASM will be invoked on
 SRCS = $(wildcard $(SRCDIR)/*.asm)
+INCDIRS  = $(SRCDIR)/ $(SRCDIR)/include/
 
 ## Project-specific configuration
 # Use this to override the above
@@ -78,6 +82,14 @@ rebuild:
 	$(MAKE) clean
 	$(MAKE) all
 .PHONY: rebuild
+
+runEmulicious:
+	$(EMULATOR_EMULICIOUS) $(ROM)
+.PHONY: runEmulicious
+
+runBGB:
+	$(EMULATOR_BGB) $(ROM)
+.PHONY: runBGB
 
 ################################################
 #                                              #
@@ -109,6 +121,14 @@ VPATH := $(SRCDIR)
 $(RESDIR)/%.1bpp: $(RESDIR)/%.png
 	@$(MKDIR_P) $(@D)
 	$(RGBGFX) -d 1 -o $@ $<
+
+$(RESDIR)/%_linear.2bpp: $(RESDIR)/%_linear.png
+	@$(MKDIR) -p $(@D)
+	$(RGBGFX) -d 2 -o $@ $<
+
+$(RESDIR)/%.2bpp: $(RESDIR)/%.png
+	@$(MKDIR) -p $(@D)
+	$(RGBGFX) -h -d 2 -o $@ $<
 
 # Define how to compress files using the PackBits16 codec
 # Compressor script requires Python 3
