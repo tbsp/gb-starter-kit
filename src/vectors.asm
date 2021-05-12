@@ -83,7 +83,7 @@ JumpToPtr::
 ; Soft-crashes if attempting to jump to RAM
 ; @param hl The address of the code to jump to
 CallHL::
-    bit 	7 h
+    bit 	7, h
     error 	nz
     jp 		hl
 
