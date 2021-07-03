@@ -41,6 +41,8 @@ RGBGFX  := $(RGBDS)rgbgfx.exe
 EMULATOR_EMULICIOUS = ../../Emulicious/Emulicious.exe
 EMULATOR_BGB = ../../bgb64/bgb64.exe
 
+ROMUSAGE := ../../Tools/romusage.exe
+
 ROM = $(BINDIR)/$(ROMNAME).$(ROMEXT)
 
 # Argument constants
@@ -88,8 +90,12 @@ runEmulicious:
 .PHONY: runEmulicious
 
 runBGB:
-	$(EMULATOR_BGB) $(ROM)
+	$(EMULATOR_BGB) $(ROM) -watch
 .PHONY: runBGB
+
+romusage:
+	$(ROMUSAGE) $(BINDIR)/$(ROMNAME).map
+.PHONY: romusage
 
 ################################################
 #                                              #
@@ -123,11 +129,15 @@ $(RESDIR)/%.1bpp: $(RESDIR)/%.png
 	$(RGBGFX) -d 1 -o $@ $<
 
 $(RESDIR)/%_linear.2bpp: $(RESDIR)/%_linear.png
-	@$(MKDIR) -p $(@D)
+	@$(MKDIR_P) $(@D)
 	$(RGBGFX) -d 2 -o $@ $<
 
+$(RESDIR)/%_map.2bpp $(RESDIR)/%_map.tilemap: $(RESDIR)/%_map.png
+	@$(MKDIR_P) $(@D)
+	$(RGBGFX) -u -T -d 2 -o $@ $<
+
 $(RESDIR)/%.2bpp: $(RESDIR)/%.png
-	@$(MKDIR) -p $(@D)
+	@$(MKDIR_P) $(@D)
 	$(RGBGFX) -h -d 2 -o $@ $<
 
 # Define how to compress files using the PackBits16 codec
