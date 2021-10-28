@@ -94,7 +94,7 @@ runBGB:
 .PHONY: runBGB
 
 romusage:
-	$(ROMUSAGE) $(BINDIR)/$(ROMNAME).map
+	$(ROMUSAGE) $(BINDIR)/$(ROMNAME).map -g
 .PHONY: romusage
 
 ################################################
